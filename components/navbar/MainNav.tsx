@@ -7,7 +7,7 @@ interface MainNavProps {}
 const MainNav: React.FC<MainNavProps> = () => {
   const { activeNav, setActiveNav } = useContext(AuthContext);
   const liClass: any =
-    'transition duration-[600ms] ease-linear flex items-center gap-2 bg-[#caa8d3] px-3 py-2 rounded-full';
+    'transition duration-[200ms] ease-linear flex items-center gap-2  px-3 py-2 rounded-full';
   const spanClass: any = 'font-bold text-[#3d1c47] text-lg';
   const navItems = [
     {
@@ -28,13 +28,15 @@ const MainNav: React.FC<MainNavProps> = () => {
   ];
   return (
     <>
-      <nav className="absolute bottom-5 left-0 w-full bottomNav font-roboto">
+      <nav className="absolute bottom-5 left-0 w-full bottomNav font-roboto z-50">
         <ul className="flex justify-center items-center gap-8 xs:gap-14 text-center">
           {navItems.map((item) => (
             <li
               onClick={() => setActiveNav(item.spanText)}
               key={item.id}
-              className={activeNav === item.spanText ? liClass : ''}
+              className={
+                activeNav === item.spanText ? `${liClass} bg-[#d1c5d6]` : ''
+              }
             >
               {item.icon}
               <span className={activeNav === item.spanText ? spanClass : ''}>

@@ -16,11 +16,10 @@ export default Home;
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
   let foods: any = {};
-  // await axios
-  //   .get(`${config.default}/food`)
-  //   .then((data) => (foods = data.data))
-  //   .catch((err) => console.log(err.message));
-
+  await axios
+    .get(`${config.default}/food`)
+    .then((data) => (foods = data.data))
+    .catch((err) => console.log(err.message));
   return {
     props: {
       foods,

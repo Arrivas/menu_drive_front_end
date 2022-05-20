@@ -1,8 +1,10 @@
 import { MenuIcon } from '@heroicons/react/outline';
+import { separteDish } from '../../functions/separateDish';
 import React from 'react';
 import MainLayout from '../MainLayout';
 import ShoppingCart from '../cart/ShoppingCart';
-import axios from 'axios';
+import FoodCard from './FoodCard';
+import Link from 'next/link';
 
 interface DashboardProps {
   user?: any;
@@ -15,7 +17,7 @@ interface DashboardState {
 
 class Dashboard extends React.Component<DashboardProps, DashboardState> {
   state = {
-    activeCategory: 'filipinoDish',
+    activeCategory: 'filipino',
   };
   render() {
     const { user, foods } = this.props;
@@ -23,14 +25,14 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     const { setActiveCategory } = this;
     // if (JSON.stringify(user) !== JSON.stringify({})) return <></>; loading
     const categoryItemsSide = [
-      { id: 1, path: 'filipinoDish', text: 'Filipino Dish' },
-      { id: 2, path: 'chineseDish', text: 'Chinese Dish' },
+      { id: 1, path: 'filipino', text: 'Filipino Dish' },
+      { id: 2, path: 'chinese', text: 'Chinese Dish' },
       { id: 3, path: 'seafood', text: 'Seafood' },
       { id: 4, path: 'appetizer', text: 'Appetizer' },
       { id: 5, path: 'drinks', text: 'Drinks' },
       { id: 6, path: 'snacks', text: 'Snacks' },
     ];
-
+    const filteredFoods = separteDish(foods, activeCategory);
     return (
       <>
         {user && (
@@ -61,15 +63,20 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
                   </ul>
                 </div>
                 {/* main content */}
-                <div className="grid grid-cols-2 gap-4 overflow-x-hidden overflow-y-auto pr-2 border h-[80%] border-black">
-                  <div className="w-[10rem] h-[15rem] border border-black">
-                    <img className="bg-black h-[60%]" src="" alt="food" />
-                    <h1>Sinigang Na Baboy</h1>
-                  </div>
-                  <div className="w-[10rem] h-[15rem] border border-black"></div>
-                  <div className="w-[10rem] h-[15rem] border border-black"></div>
-                  <div className="w-[10rem] h-[15rem] border border-black"></div>
-                  <div className="w-[10rem] h-[15rem] border border-black"></div>
+                <div className="grid grid-cols-2 gap-2 overflow-x-hidden overflow-y-auto pb-2 pt-5 pr-2 h-[70%]">
+                  {filteredFoods.map((food: any) => (
+                    <Link href={`/food/${food.id}`} key={food.id} passHref>
+                      <a>
+                        <FoodCard
+                          title={food.name}
+                          description={food.description}
+                          imgUrl={food.img}
+                          price={food.price}
+                          ratings={food.ratings}
+                        />
+                      </a>
+                    </Link>
+                  ))}
                 </div>
               </div>
             </div>

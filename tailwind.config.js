@@ -6,6 +6,7 @@ module.exports = {
   theme: {
     fontFamily: {
       roboto: ['Roboto', 'sans-serif'],
+      openSans: ['Open Sans', 'sans-serif'],
     },
     screens: {
       iphone: { raw: '(min-height: 568px)' },
