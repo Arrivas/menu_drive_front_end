@@ -22,16 +22,16 @@ const FoodCard: React.FC<FoodCardProps> = ({
   const resultRatings: number = getRatings(userRatings);
   return (
     <>
-      <div className="w-[10rem] h-[10rem] shadow-md rounded-2xl">
+      <div className="w-[10rem] h-[11rem] shadow-md rounded-2xl">
         <div className="h-[60%] flex items-center justify-center ">
           <img
-            className="h-[90%] object-cover object-center "
+            className="h-[70%] object-cover object-center "
             src={imgUrl}
             alt="food"
           />
         </div>
         <h1 className="font-semibold tex-lg px-1">{title}</h1>
-        <p className="text-xs px-1">{description}</p>
+        <p className="text-xs px-1 line-clamp-1">{description}</p>
         <div className="flex w-full justify-between items-center px-2">
           <StarRating
             containerClassName="flex"

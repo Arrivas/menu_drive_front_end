@@ -1,17 +1,17 @@
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { Formik, Form } from 'formik';
 import FormikField from '../forms/FormikField';
 import { useContext, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
 
-interface LoginComponentProps {}
+interface LoginComponentProps {
+  user: any
+}
 
-const LoginComponent: React.FC<LoginComponentProps> = () => {
-  const { user, loginWithEmailPass } = useContext(AuthContext);
+const LoginComponent: React.FC<LoginComponentProps> = ({user}) => {
+  const {  loginWithEmailPass } = useContext(AuthContext);
   const [errors, setErrors] = useState<any>({});
   const [showPassword, setShowPassowrd] = useState<boolean>(false);
-  const router = useRouter();
 
   const initialValues = {
     email: '',

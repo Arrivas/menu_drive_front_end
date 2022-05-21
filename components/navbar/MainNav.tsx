@@ -8,22 +8,43 @@ const MainNav: React.FC<MainNavProps> = () => {
   const { activeNav, setActiveNav } = useContext(AuthContext);
   const liClass: any =
     'transition duration-[200ms] ease-linear flex items-center gap-2  px-3 py-2 rounded-full';
-  const spanClass: any = 'font-bold text-[#3d1c47] text-lg';
+  const spanClass: any = 'font-bold text-white text-lg';
+  let navIconClass = '';
+  // 3d1c47 old color
+  // old bg d1c5d6
   const navItems = [
     {
       id: 1,
       spanText: 'Home',
-      icon: <HomeIcon className="text-[#3d1c47]" height={30} width={30} />,
+      icon: (
+        <HomeIcon
+          className={activeNav === 'Home' ? 'text-white' : 'text-black'}
+          height={30}
+          width={30}
+        />
+      ),
     },
     {
       id: 2,
       spanText: 'Orders',
-      icon: <PencilAltIcon className="text-[#3d1c47]" height={30} width={30} />,
+      icon: (
+        <PencilAltIcon
+          className={activeNav === 'Orders' ? 'text-white' : 'text-black'}
+          height={30}
+          width={30}
+        />
+      ),
     },
     {
       id: 3,
       spanText: 'Account',
-      icon: <UserIcon className="text-[#3d1c47]" height={30} width={30} />,
+      icon: (
+        <UserIcon
+          className={activeNav === 'Account' ? 'text-white' : 'text-black'}
+          height={30}
+          width={30}
+        />
+      ),
     },
   ];
   return (
@@ -35,10 +56,11 @@ const MainNav: React.FC<MainNavProps> = () => {
               onClick={() => setActiveNav(item.spanText)}
               key={item.id}
               className={
-                activeNav === item.spanText ? `${liClass} bg-[#d1c5d6]` : ''
+                activeNav === item.spanText ? `${liClass} bg-black` : ''
               }
             >
               {item.icon}
+
               <span className={activeNav === item.spanText ? spanClass : ''}>
                 {activeNav === item.spanText ? item.spanText : ''}
               </span>

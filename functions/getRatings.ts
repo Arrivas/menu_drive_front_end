@@ -1,9 +1,9 @@
 export const getRatings = (ratings: any[]) => {
-  const oStars = [0];
-  const tStars = [0];
-  const thStars = [0];
-  const fotars = [0];
-  const fitars = [0];
+  const oStars = [];
+  const tStars = [];
+  const thStars = [];
+  const fotars = [];
+  const fitars = [];
   let countRage = 0;
   let countAve = 0;
   ratings.forEach((rate) => {

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import links from '../../config/links';
-import axios from 'axios'
+import axios from 'axios';
+import toast from 'react-hot-toast';
 import { useState } from 'react';
 import {
   ChevronLeftIcon,
@@ -11,32 +12,49 @@ import {
 
 interface FoodDetailsProps {
   foodData: any;
+  user: any;
 }
 
-const FoodDetails: React.FC<FoodDetailsProps> = ({ foodData }) => {
+const FoodDetails: React.FC<FoodDetailsProps> = ({ foodData, user }) => {
   const { img, name, description, price, servingTime } = foodData;
   const [qty, setQty] = useState<number>(1);
-
   const handleAddQty = () => {
-    if (qty >= 20) return;
+    // if (qty >= 20) return;
     setQty(qty + 1);
   };
   const handleSubQty = () => {
-    if (qty <= 1) return;
+    // if (qty <= 1) return;
     setQty(qty - 1);
   };
-
-  const handleAddToCart = async() => {
+  const handleAddToCart = async () => {
     const foodItem = {
       name,
       qty,
-      
-    }
+      orderType: '',
+      price,
+      img,
+    };
+    await axios
+      .post(`${links.default}/user/cart`, {
+        uid: user?.user?.user_id,
+        foodItem,
+      })
+      .then((data) => {
+        if (data.status !== 200) {
+          return toast.error(data.data.message);
+        }
+        return toast.success(data.data.message);
+      })
+      .then((err: any) => {
+        if (err) console.log(err);
+      });
+    // set back qty to 0
+    setQty(1);
   };
   return (
     <>
       <div className="flex justify-center items-center">
-        <div className="pt-8 h-[550px] w-[375px] xs:h-screen font-roboto relative">
+        <div className="pt-8 h-[550px] w-[300px] sm:w-[350px] xs:h-screen font-roboto relative">
           <div className="z-50 absolute">
             <Link href="/">
               <ChevronLeftIcon

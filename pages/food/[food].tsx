@@ -1,16 +1,24 @@
 import { GetServerSideProps } from 'next';
+import { useEffect, useContext } from 'react';
+import { useRouter } from 'next/router';
 import links from '../../config/links';
 import axios from 'axios';
 import FoodDetails from '../../components/dashboard/FoodDetails';
+import Auth from '../../auth/Auth';
 
 interface FoodProps {
   foodData: any;
 }
 
 const Food: React.FC<FoodProps> = ({ foodData }) => {
+  const router = useRouter();
+  const user: any = Auth.getCurrentUser();
+  useEffect(() => {
+    if (!user) router.push('/login');
+  }, []);
   return (
     <>
-      <FoodDetails foodData={foodData} />
+      <FoodDetails user={user} foodData={foodData} />
     </>
   );
 };

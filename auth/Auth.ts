@@ -8,7 +8,7 @@ const getCurrentUser = () => {
     if (!token) return null;
     const decodedToken: any = jwtDecode(token);
     if (decodedToken.exp * 1000 < Date.now()) {
-      localStorage.setItem('FBIdToken', '');
+      localStorage.clear();
       return null;
     }
   }

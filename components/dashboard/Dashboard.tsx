@@ -2,7 +2,7 @@ import { MenuIcon } from '@heroicons/react/outline';
 import { separteDish } from '../../functions/separateDish';
 import React from 'react';
 import MainLayout from '../MainLayout';
-import ShoppingCart from '../cart/ShoppingCart';
+import ShoppingCartIconComp from '../cart/ShoppingCartIconComp';
 import FoodCard from './FoodCard';
 import Link from 'next/link';
 
@@ -18,12 +18,14 @@ interface DashboardState {
 class Dashboard extends React.Component<DashboardProps, DashboardState> {
   state = {
     activeCategory: 'filipino',
+    user: {},
   };
+
   render() {
-    const { user, foods } = this.props;
-    const { activeCategory } = this.state;
+    const { foods, user } = this.props;
+    const { activeCategory }: any = this.state;
     const { setActiveCategory } = this;
-    // if (JSON.stringify(user) !== JSON.stringify({})) return <></>; loading
+
     const categoryItemsSide = [
       { id: 1, path: 'filipino', text: 'Filipino Dish' },
       { id: 2, path: 'chinese', text: 'Chinese Dish' },
@@ -35,14 +37,16 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     const filteredFoods = separteDish(foods, activeCategory);
     return (
       <>
-        {user && (
+        {Object.keys(user).length !== 0 && (
           <MainLayout title="Home">
             <div className="flex items-center justify-center">
               <div className="pt-10 h-[550px] xs:h-screen w-[290px] xs:w-[375px] font-roboto relative px-2 xs:px-5">
                 {/* top navigation */}
                 <div className="mx-auto flex w-[90%] justify-between items-center">
                   <MenuIcon width={35} height={35} />
-                  <ShoppingCart cartCount={0} />
+                  <ShoppingCartIconComp
+                    cartCount={user?.cartItems?.length || 0}
+                  />
                 </div>
                 {/* top category selection */}
                 <div className="w-[95%] overflow-x-auto pt-4 no-scrollbar">
