@@ -1,4 +1,4 @@
-import { MenuIcon } from '@heroicons/react/outline';
+import { MenuIcon, SearchIcon } from '@heroicons/react/outline';
 import { separteDish } from '../../functions/separateDish';
 import React from 'react';
 import MainLayout from '../MainLayout';
@@ -13,28 +13,37 @@ interface DashboardProps {
 
 interface DashboardState {
   activeCategory: string;
+  searchQuery: string;
 }
 
 class Dashboard extends React.Component<DashboardProps, DashboardState> {
   state = {
-    activeCategory: 'filipino',
+    activeCategory: 'all',
     user: {},
+    searchQuery: '',
   };
 
   render() {
     const { foods, user } = this.props;
-    const { activeCategory }: any = this.state;
+    const { activeCategory, searchQuery }: any = this.state;
     const { setActiveCategory } = this;
 
     const categoryItemsSide = [
-      { id: 1, path: 'filipino', text: 'Filipino Dish' },
-      { id: 2, path: 'chinese', text: 'Chinese Dish' },
-      { id: 3, path: 'seafood', text: 'Seafood' },
-      { id: 4, path: 'appetizer', text: 'Appetizer' },
-      { id: 5, path: 'drinks', text: 'Drinks' },
-      { id: 6, path: 'snacks', text: 'Snacks' },
+      { id: 1, path: 'all', text: 'All' },
+      { id: 2, path: 'filipino', text: 'Filipino Dish' },
+      { id: 3, path: 'chinese', text: 'Chinese Dish' },
+      { id: 4, path: 'seafood', text: 'Seafood' },
+      { id: 5, path: 'appetizer', text: 'Appetizer' },
+      { id: 6, path: 'drinks', text: 'Drinks' },
+      { id: 7, path: 'snacks', text: 'Snacks' },
     ];
-    const filteredFoods = separteDish(foods, activeCategory);
+    let filteredFoods = separteDish(foods, activeCategory);
+    if (searchQuery)
+      filteredFoods =
+        filteredFoods.filter((foods: any) =>
+          foods.name.toLowerCase().startsWith(searchQuery.toLowerCase())
+        ) || filteredFoods;
+
     if (!foods) return <>cannot get data</>;
     return (
       <>
@@ -43,7 +52,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
             <div className="flex items-center justify-center">
               <div className="pt-10 h-[550px] xs:h-screen w-[290px] xs:w-[375px] font-roboto relative px-2 xs:px-5">
                 {/* top navigation */}
-                <div className="mx-auto flex w-[90%] justify-between items-center">
+                <div className="mx-auto flex w-[92%] sm:w-full justify-between items-center">
                   <MenuIcon width={35} height={35} />
                   <ShoppingCartIconComp
                     cartCount={user?.cartItems?.length || 0}
@@ -51,6 +60,25 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
                 </div>
                 {/* top category selection */}
                 <div className="w-[95%] overflow-x-auto pt-4 no-scrollbar">
+                  <div className="flex relative items-center group mb-2">
+                    <SearchIcon
+                      className="absolute left-0 ml-3 group-focus:text-black text-gray-400"
+                      width={20}
+                      height={20}
+                    />
+                    <input
+                      className="border border-gray-400 group-focus:border-black rounded-full w-full py-[0.3rem] px-10"
+                      name="searchQuery"
+                      onChange={(e) =>
+                        this.setState({
+                          searchQuery: e.target.value,
+                          activeCategory: 'all',
+                        })
+                      }
+                      type="text"
+                    />
+                  </div>
+
                   <ul className="flex gap-4">
                     {categoryItemsSide.map((item) => (
                       <li
@@ -68,7 +96,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
                   </ul>
                 </div>
                 {/* main content */}
-                <div className="grid grid-cols-2 gap-2 overflow-x-hidden overflow-y-auto pb-2 pt-5 pr-2 h-[70%]">
+                <div className="grid grid-cols-2 gap-2 overflow-x-hidden overflow-y-auto pb-2 pt-5 pr-2 h-[70%] gridComp">
                   {filteredFoods.map((food: any) => (
                     <Link href={`/food/${food.id}`} key={food.id} passHref>
                       <a>

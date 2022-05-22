@@ -107,11 +107,11 @@ const FoodDetails: React.FC<FoodDetailsProps> = ({ foodData, user }) => {
               <div className="flex flex-col sm:flex-row pt-5 gap-2 items-center fixed sm:absolute bottom-5 left-0 w-full">
                 <button
                   onClick={handleAddToCart}
-                  className="rounded-full w-[90%] sm:w-[80%] font-bold bg-[#3d1c47] text-gray-200 py-3 px-5"
+                  className="rounded-full w-[90%] sm:w-[80%] font-bold bg-black text-gray-200 py-3 px-5"
                 >
                   Add to Cart
                 </button>
-                <button className="rounded-full w-[90%] sm:w-[80%] font-bold bg-[#3d1c47] text-gray-200 py-3 px-5">
+                <button className="rounded-full w-[90%] sm:w-[80%] font-bold bg-black text-gray-200 py-3 px-5">
                   Place Order
                 </button>
               </div>

@@ -1,11 +1,13 @@
-import LoginRed from '../redirects/LoginRed';
+
+import LoginComponent from '../components/login/LoginComponent';
 
 interface LoginProps {}
 
 const Login: React.FC<LoginProps> = () => {
+
   return (
     <>
-      <LoginRed />
+      <LoginComponent  />
     </>
   );
 };

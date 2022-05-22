@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import links from '../../config/links';
 import axios from 'axios';
 import FoodDetails from '../../components/dashboard/FoodDetails';
-import Auth from '../../auth/Auth';
+import { getCurrentUser } from '../../auth/Auth';
 
 interface FoodProps {
   foodData: any;
@@ -12,7 +12,7 @@ interface FoodProps {
 
 const Food: React.FC<FoodProps> = ({ foodData }) => {
   const router = useRouter();
-  const user: any = Auth.getCurrentUser();
+  const user: any = getCurrentUser();
   useEffect(() => {
     if (!user) router.push('/login');
   }, []);

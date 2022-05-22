@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import Auth from '../auth/Auth';
+import { getCurrentUser } from '../auth/Auth';
 import axios from 'axios';
 import links from '../config/links';
 import CartComponent from '../components/cart/CartComponent';
@@ -11,8 +11,9 @@ const CartCompRed: React.FC<CartCompRedProps> = () => {
   const [cartItems, setCartItems] = useState<any>([]);
   const [user, setUser] = useState<any>({});
   const router = useRouter();
+
   useEffect(() => {
-    const getUser: any = Auth.getCurrentUser();
+    const getUser: any = getCurrentUser();
     setUser(getUser);
     if (!getUser) router.push('/login');
     if (getUser) {

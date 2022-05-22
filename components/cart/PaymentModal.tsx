@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Dialog } from '@headlessui/react';
+import { useRouter } from 'next/router';
 import RadioSelectPayment from './RadioSelectPayment';
 import RadioOrderType from './RadioOrderType';
 import axios from 'axios';
 import links from '../../config/links';
 import PayPal from './PayPal';
+import AuthContext from '../../context/AuthContext';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -14,7 +16,7 @@ interface PaymentModalProps {
   orderType: string;
   setOrderType: (order: string) => any;
   cartItemsData: any;
-  userId: string;
+  user: any;
   cartTotal: number;
 }
 
@@ -26,30 +28,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   orderType,
   setOrderType,
   cartItemsData,
-  userId,
+  user,
   cartTotal,
 }) => {
-  const [scriptLoaded, setScriptLoaded] = useState<boolean>(false);
-
-  // useEffect(() => {
-  //   addPaypalScript();
-  // }, []);
-
-  // const addPaypalScript = () => {
-  //   // @ts-ignore
-  //   if (window.paypal) {
-  //     setScriptLoaded(true);
-  //     return;
-  //   }
-  //   const script = document.createElement('script');
-  //   script.src =
-  //     'https://www.paypal.com/sdk/js?client-id=AUdO8mJ2lpUz5WjQGJFzekDulglra3coIiGSFlskxKhDxEra3n4hJ_oNlpz77b8GD3sIJ-IDNPbySwVZ';
-  //   script.type = 'text/javascript';
-  //   script.async = true;
-  //   document.onload = () => setScriptLoaded(true);
-  //   document.body.appendChild(script);
-  // };
-
+  const { userPayment, setUserPayment } = useContext(AuthContext);
+  const [status, setStatus] = useState<any>('');
+  const router = useRouter();
   const handlePayNow = async () => {
     const cartItems = [...cartItemsData];
     const foodOrders = cartItems.map((item: any) => {
@@ -63,18 +47,34 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       return obj;
     });
     if (radioValue === 'Cash') {
+      // call backend
       await axios
-        .post(`${links.default}/order/${userId}`, { foodOrders })
-        .then((data) => console.log(data.data))
+        .post(`${links.default}/order/${user?.user_id}`, { foodOrders })
+        .then((data) => {
+          setStatus(data.status);
+          console.log(data.status);
+        })
+        .catch((err) =>
+          console.log(
+            err.response.data.error || err.response.data.message || err
+          )
+        );
+      await axios
+        .put(`${links.default}/order/pay/${user?.user_id}`)
+        .then((data) => {
+          setStatus(data.status);
+          console.log(data.status);
+        })
         .catch((err) =>
           console.log(
             err.response.data.error || err.response.data.message || err
           )
         );
     }
-    // paypal
-
-    // console.log(foodOrders);
+    if (status === 200) {
+      router.push('/payment/success');
+      setUserPayment({ details: user?.name, amount: cartTotal });
+    }
   };
   return (
     <Dialog
@@ -100,7 +100,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
           />
           <div className="flex flex-col mx-auto py-5 w-[90%]">
             {radioValue === 'PayPal' ? (
-              <PayPal amount={cartTotal.toFixed(2)} />
+              <PayPal
+                userId={user?.user_id}
+                amount={cartTotal.toFixed(2)}
+                orderType={orderType}
+                cartItemsData={cartItemsData}
+              />
             ) : (
               <button
                 onClick={handlePayNow}
@@ -111,7 +116,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                 } py-3 rounded-md font-bold`}
                 type="button"
               >
-                pay now
+                place order
               </button>
             )}
 

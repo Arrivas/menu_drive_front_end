@@ -57,9 +57,9 @@ const CartComponent: React.FC<CartComponentProps> = ({ cartItems, user }) => {
   return (
     <>
       <div className="flex justify-center items-center font-roboto">
-        <div className="pt-8 h-[550px] w-[375px] xs:h-screen font-roboto relative">
+        <div className="pt-8 h-[667px] w-[375px] sm:h-screen font-roboto relative">
           {/* top items */}
-          <div className="flex justify-between w-full px-8 sm:px-0">
+          <div className="flex justify-between w-full sm:px-5">
             <Link href="/">
               <ChevronLeftIcon
                 className="cursor-pointer text-gray-500"
@@ -86,7 +86,7 @@ const CartComponent: React.FC<CartComponentProps> = ({ cartItems, user }) => {
             ))}
           </div>
           {/* checkout */}
-          <div className="fixed sm:absolute px-3 sm:px-0 bottom-5 left-0 w-full">
+          <div className="fixed sm:absolute px-3 bottom-5 mx-auto left-[50%] transform translate-x-[-50%] w-[90%]">
             {/* total */}
             <div className="flex justify-between px-5 pb-2 text-2xl font-bold">
               <span className="">Total</span>
@@ -112,7 +112,7 @@ const CartComponent: React.FC<CartComponentProps> = ({ cartItems, user }) => {
               orderType={orderType}
               setOrderType={setOrderType}
               cartItemsData={cartItemsData}
-              userId={user?.user?.user_id}
+              user={user?.user}
               cartTotal={cartTotal}
             />
           </div>

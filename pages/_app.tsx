@@ -10,8 +10,8 @@ function MyApp({ Component, pageProps }: AppProps) {
     <PayPalScriptProvider
       options={{
         'client-id':
-          'AUdO8mJ2lpUz5WjQGJFzekDulglra3coIiGSFlskxKhDxEra3n4hJ_oNlpz77b8GD3sIJ-IDNPbySwVZ',
-          currency: 'PHP'
+          'AUdO8mJ2lpUz5WjQGJFzekDulglra3coIiGSFlskxKhDxEra3n4hJ_oNlpz77b8GD3sIJ-IDNPbySwVZ&disable-funding=credit,card',
+        currency: 'PHP',
       }}
     >
       <AuthContextProvider>

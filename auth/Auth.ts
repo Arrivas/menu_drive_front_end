@@ -1,6 +1,6 @@
 import jwtDecode from 'jwt-decode';
 
-const getCurrentUser = () => {
+export const getCurrentUser = () => {
   let token: any = '';
 
   if (typeof window !== 'undefined') {
@@ -17,8 +17,4 @@ const getCurrentUser = () => {
     user: jwtDecode(token),
     token,
   };
-};
-
-export default {
-  getCurrentUser,
 };
