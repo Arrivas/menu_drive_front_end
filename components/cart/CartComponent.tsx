@@ -54,7 +54,6 @@ const CartComponent: React.FC<CartComponentProps> = ({ cartItems, user }) => {
   const handleCheckOut = () => {
     setIsOpen(isOpen ? false : true);
   };
-
   return (
     <>
       <div className="flex justify-center items-center font-roboto">
@@ -98,7 +97,10 @@ const CartComponent: React.FC<CartComponentProps> = ({ cartItems, user }) => {
             </div>
             <button
               onClick={handleCheckOut}
-              className="w-full text-xl py-3 rounded-2xl bg-black text-gray-300 font-extrabold"
+              disabled={cartItemsData.length === 0 ? true : false}
+              className={`${
+                cartItemsData.length === 0 ? 'opacity-50' : 'opacity-100'
+              } w-full text-xl py-3 rounded-2xl bg-black text-gray-300 font-extrabold`}
             >
               Checkout
             </button>
@@ -111,6 +113,7 @@ const CartComponent: React.FC<CartComponentProps> = ({ cartItems, user }) => {
               setOrderType={setOrderType}
               cartItemsData={cartItemsData}
               userId={user?.user?.user_id}
+              cartTotal={cartTotal}
             />
           </div>
         </div>

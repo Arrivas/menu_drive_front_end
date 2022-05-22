@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import RadioSelectPayment from './RadioSelectPayment';
 import RadioOrderType from './RadioOrderType';
 import axios from 'axios';
 import links from '../../config/links';
+import PayPal from './PayPal';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -13,6 +15,7 @@ interface PaymentModalProps {
   setOrderType: (order: string) => any;
   cartItemsData: any;
   userId: string;
+  cartTotal: number;
 }
 
 const PaymentModal: React.FC<PaymentModalProps> = ({
@@ -24,7 +27,29 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   setOrderType,
   cartItemsData,
   userId,
+  cartTotal,
 }) => {
+  const [scriptLoaded, setScriptLoaded] = useState<boolean>(false);
+
+  // useEffect(() => {
+  //   addPaypalScript();
+  // }, []);
+
+  // const addPaypalScript = () => {
+  //   // @ts-ignore
+  //   if (window.paypal) {
+  //     setScriptLoaded(true);
+  //     return;
+  //   }
+  //   const script = document.createElement('script');
+  //   script.src =
+  //     'https://www.paypal.com/sdk/js?client-id=AUdO8mJ2lpUz5WjQGJFzekDulglra3coIiGSFlskxKhDxEra3n4hJ_oNlpz77b8GD3sIJ-IDNPbySwVZ';
+  //   script.type = 'text/javascript';
+  //   script.async = true;
+  //   document.onload = () => setScriptLoaded(true);
+  //   document.body.appendChild(script);
+  // };
+
   const handlePayNow = async () => {
     const cartItems = [...cartItemsData];
     const foodOrders = cartItems.map((item: any) => {
@@ -37,7 +62,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       };
       return obj;
     });
-    if (orderType === 'Cash') {
+    if (radioValue === 'Cash') {
       await axios
         .post(`${links.default}/order/${userId}`, { foodOrders })
         .then((data) => console.log(data.data))
@@ -47,6 +72,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
           )
         );
     }
+    // paypal
+
     // console.log(foodOrders);
   };
   return (
@@ -72,17 +99,22 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             setRadioValue={setRadioValue}
           />
           <div className="flex flex-col mx-auto py-5 w-[90%]">
-            <button
-              onClick={handlePayNow}
-              className={`${
-                radioValue === 'PayPal'
-                  ? 'bg-[#f6be38] text-gray-100'
-                  : 'bg-green-400 text-gray-100'
-              } py-3 rounded-md font-bold`}
-              type="button"
-            >
-              pay now
-            </button>
+            {radioValue === 'PayPal' ? (
+              <PayPal amount={cartTotal.toFixed(2)} />
+            ) : (
+              <button
+                onClick={handlePayNow}
+                className={`${
+                  radioValue === 'PayPal'
+                    ? 'bg-[#f6be38] text-gray-100'
+                    : 'bg-green-400 text-gray-100'
+                } py-3 rounded-md font-bold`}
+                type="button"
+              >
+                pay now
+              </button>
+            )}
+
             <button
               className="mt-1 rounded-md font-bold hover:text-gray-600 bg-gray-300 text-gray-800 py-3"
               type="button"
