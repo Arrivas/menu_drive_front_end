@@ -25,7 +25,6 @@ const CartCompRed: React.FC<CartCompRedProps> = () => {
       getCartItems();
     }
   }, []);
-  console.log(cartItems);
   return (
     <>
       <CartComponent user={user} cartItems={cartItems} />

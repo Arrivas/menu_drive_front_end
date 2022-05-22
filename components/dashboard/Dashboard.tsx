@@ -35,6 +35,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       { id: 6, path: 'snacks', text: 'Snacks' },
     ];
     const filteredFoods = separteDish(foods, activeCategory);
+    if (!foods) return <>cannot get data</>;
     return (
       <>
         {Object.keys(user).length !== 0 && (

@@ -1,13 +1,18 @@
-import { Dialog, RadioGroup } from '@headlessui/react';
-import { CheckIcon } from '@heroicons/react/outline';
-import React from 'react';
+import { Dialog } from '@headlessui/react';
 import RadioSelectPayment from './RadioSelectPayment';
+import RadioOrderType from './RadioOrderType';
+import axios from 'axios';
+import links from '../../config/links';
 
 interface PaymentModalProps {
   isOpen: boolean;
   setIsOpen: (condition: boolean) => any;
-  radioValue: string;
+  radioValue: any;
   setRadioValue: (value: string) => any;
+  orderType: string;
+  setOrderType: (order: string) => any;
+  cartItemsData: any;
+  userId: string;
 }
 
 const PaymentModal: React.FC<PaymentModalProps> = ({
@@ -15,7 +20,35 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   setIsOpen,
   radioValue,
   setRadioValue,
+  orderType,
+  setOrderType,
+  cartItemsData,
+  userId,
 }) => {
+  const handlePayNow = async () => {
+    const cartItems = [...cartItemsData];
+    const foodOrders = cartItems.map((item: any) => {
+      const obj = {
+        name: item.name,
+        qty: item.qty,
+        orderType,
+        img: item.img,
+        price: item.price,
+      };
+      return obj;
+    });
+    if (orderType === 'Cash') {
+      await axios
+        .post(`${links.default}/order/${userId}`, { foodOrders })
+        .then((data) => console.log(data.data))
+        .catch((err) =>
+          console.log(
+            err.response.data.error || err.response.data.message || err
+          )
+        );
+    }
+    // console.log(foodOrders);
+  };
   return (
     <Dialog
       open={isOpen}
@@ -31,20 +64,27 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
           <Dialog.Title className="font-extrabold text-center text-2xl pt-5 text-gray-800">
             Complete your order
           </Dialog.Title>
+          {/* order type */}
+          <RadioOrderType orderType={orderType} setOrderType={setOrderType} />
           {/* payment method */}
           <RadioSelectPayment
             radioValue={radioValue}
             setRadioValue={setRadioValue}
           />
-          <div className="flex flex-col mx-auto py-5 w-[80%]">
+          <div className="flex flex-col mx-auto py-5 w-[90%]">
             <button
-              className="rounded-md font-bold bg-green-400 text-green-800 py-3"
+              onClick={handlePayNow}
+              className={`${
+                radioValue === 'PayPal'
+                  ? 'bg-[#f6be38] text-gray-100'
+                  : 'bg-green-400 text-gray-100'
+              } py-3 rounded-md font-bold`}
               type="button"
             >
               pay now
             </button>
             <button
-              className="mt-1 rounded-md font-bold bg-red-400 text-red-800 py-3"
+              className="mt-1 rounded-md font-bold hover:text-gray-600 bg-gray-300 text-gray-800 py-3"
               type="button"
               onClick={() => setIsOpen(false)}
             >

@@ -17,14 +17,18 @@ const CartComponent: React.FC<CartComponentProps> = ({ cartItems, user }) => {
   const [cartTotal, setCartTotal] = useState<number>(0);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [radioValue, setRadioValue] = useState<string>('Cash');
+  const [orderType, setOrderType] = useState<string>('Dine-in');
+
   useEffect(() => {
     setCartItemsData(cartItems);
     setCartTotal(getCartTotalPrice(cartItems));
   });
 
   const handleAddQty = (item: any) => {
+    console.log(orderType);
     const currentItem = [...cartItemsData];
     const index = currentItem.indexOf(item);
+    console.log(radioValue);
     // if (currentItem[index].qty >= 20) return;
 
     currentItem[index].qty = currentItem[index].qty + 1;
@@ -103,6 +107,10 @@ const CartComponent: React.FC<CartComponentProps> = ({ cartItems, user }) => {
               setRadioValue={setRadioValue}
               isOpen={isOpen}
               setIsOpen={setIsOpen}
+              orderType={orderType}
+              setOrderType={setOrderType}
+              cartItemsData={cartItemsData}
+              userId={user?.user?.user_id}
             />
           </div>
         </div>
