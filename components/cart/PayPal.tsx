@@ -62,6 +62,7 @@ const Paypal: React.FC<PaypalProps> = ({
                   .put(`${links.default}/order/pay/${userId}`)
                   .then((data) => {
                     console.log(data.status);
+                    setStatus(data.status);
                   })
                   .catch((err) => {
                     console.log(

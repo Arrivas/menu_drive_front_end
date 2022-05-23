@@ -5,6 +5,7 @@ import MainLayout from '../MainLayout';
 import ShoppingCartIconComp from '../cart/ShoppingCartIconComp';
 import FoodCard from './FoodCard';
 import Link from 'next/link';
+import Loading from '../Loading';
 
 interface DashboardProps {
   user?: any;
@@ -37,17 +38,16 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       { id: 6, path: 'drinks', text: 'Drinks' },
       { id: 7, path: 'snacks', text: 'Snacks' },
     ];
-    if (!foods) return <>cannot get data</>;
+    if (!foods) return <></>;
     let filteredFoods = separteDish(foods, activeCategory);
     if (searchQuery)
       filteredFoods =
         filteredFoods.filter((foods: any) =>
           foods.name.toLowerCase().startsWith(searchQuery.toLowerCase())
         ) || filteredFoods;
-
     return (
       <>
-        {Object.keys(user).length !== 0 && (
+        {Object.keys(user).length !== 0 ? (
           <MainLayout title="Home">
             <div className="flex items-center justify-center">
               <div className="pt-10 h-[550px] xs:h-screen w-[290px] xs:w-[375px] font-roboto relative px-2 xs:px-5">
@@ -114,6 +114,8 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
               </div>
             </div>
           </MainLayout>
+        ) : (
+          <Loading loading={true} />
         )}
       </>
     );

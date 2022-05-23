@@ -19,7 +19,6 @@ interface LoginComponentProps {}
 
 const LoginComponent: React.FC<LoginComponentProps> = () => {
   const { setUser } = useContext(AuthContext);
-  const [loading, setLoading] = useState(true);
   const [userLocal, setUserLocal] = useState<any>('');
   const [errors, setErrors] = useState<any>({});
   const [showPassword, setShowPassowrd] = useState<boolean>(false);
@@ -72,7 +71,6 @@ const LoginComponent: React.FC<LoginComponentProps> = () => {
           .then((res) => {
             console.log(res.data);
             localStorage.setItem('FBIdToken', `Bearer ${accessToken}`);
-            setLoading(false);
             router.replace('/');
           })
           .catch((error) => console.log(error?.response?.data?.message || ''));
@@ -97,7 +95,6 @@ const LoginComponent: React.FC<LoginComponentProps> = () => {
           .then((res) => {
             console.log(res.data);
             localStorage.setItem('FBIdToken', `Bearer ${accessToken}`);
-            setLoading(false);
             router.replace('/');
           })
           .catch((error) => console.log(error?.response?.data?.message || ''));
@@ -106,6 +103,7 @@ const LoginComponent: React.FC<LoginComponentProps> = () => {
   };
 
   const handleShowPassword = () => setShowPassowrd(showPassword ? false : true);
+
   return (
     <>
       {!userLocal ? (
