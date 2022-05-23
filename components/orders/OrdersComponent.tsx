@@ -21,8 +21,8 @@ const OrdersComponent: React.FC<OrdersComponentProps> = ({
   const completedOrders: any = [];
 
   if (orderHistory) {
-    orderHistory.filter((order: any) => {
-      order.orderedFoods.forEach((food: any) => {
+    orderHistory?.filter((order: any) => {
+      order?.orderedFoods?.forEach((food: any) => {
         if (
           order.orderStatus.status === 'pending payment' ||
           order.orderStatus.status === 'serving'
