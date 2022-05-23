@@ -37,6 +37,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       { id: 6, path: 'drinks', text: 'Drinks' },
       { id: 7, path: 'snacks', text: 'Snacks' },
     ];
+    if (!foods) return <>cannot get data</>;
     let filteredFoods = separteDish(foods, activeCategory);
     if (searchQuery)
       filteredFoods =
@@ -44,7 +45,6 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
           foods.name.toLowerCase().startsWith(searchQuery.toLowerCase())
         ) || filteredFoods;
 
-    if (!foods) return <>cannot get data</>;
     return (
       <>
         {Object.keys(user).length !== 0 && (
