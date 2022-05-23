@@ -2,7 +2,12 @@ import { useContext, useState, useEffect } from 'react';
 import { Formik, Form } from 'formik';
 import { useRouter } from 'next/router';
 import { getCurrentUser } from '../../auth/Auth';
-import { auth, provider, signInWithPopup } from '../../config/firebase';
+import {
+  auth,
+  googleProvider,
+  facebookProvider,
+  signInWithPopup,
+} from '../../config/firebase';
 import FormikField from '../forms/FormikField';
 import AuthContext from '../../context/AuthContext';
 import Head from 'next/head';
@@ -50,7 +55,7 @@ const LoginComponent: React.FC<LoginComponentProps> = () => {
       });
   };
   const signInWithGoogle = () => {
-    signInWithPopup(auth, provider)
+    signInWithPopup(auth, googleProvider)
       .then(async (res: any) => {
         const { accessToken } = res.user;
         const { displayName, email, photoURL, uid } = res.user;
@@ -74,7 +79,31 @@ const LoginComponent: React.FC<LoginComponentProps> = () => {
       })
       .catch((error) => console.log(error?.response?.data?.message || ''));
   };
-  const signInWithFacebook = () => {};
+  const signInWithFacebook = () => {
+    signInWithPopup(auth, facebookProvider)
+      .then(async (res: any) => {
+        const { accessToken } = res.user;
+        const { displayName, email, photoURL, uid } = res.user;
+        const newUser = {
+          name: displayName,
+          email,
+          password: '',
+          userId: uid,
+          imgUrl: photoURL,
+          number: '0999',
+        };
+        await axios
+          .post(`${links.default}/user/facebook`, newUser)
+          .then((res) => {
+            console.log(res.data);
+            localStorage.setItem('FBIdToken', `Bearer ${accessToken}`);
+            setLoading(false);
+            router.replace('/');
+          })
+          .catch((error) => console.log(error?.response?.data?.message || ''));
+      })
+      .catch((error) => console.log(error?.response?.data?.message || ''));
+  };
 
   const handleShowPassword = () => setShowPassowrd(showPassword ? false : true);
   return (
