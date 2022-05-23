@@ -1,17 +1,20 @@
 import { useContext, useState, useEffect } from 'react';
 import { Formik, Form } from 'formik';
 import { useRouter } from 'next/router';
+import { getCurrentUser } from '../../auth/Auth';
+import { auth, provider, signInWithPopup } from '../../config/firebase';
 import FormikField from '../forms/FormikField';
 import AuthContext from '../../context/AuthContext';
 import Head from 'next/head';
 import axios from 'axios';
 import links from '../../config/links';
-import { getCurrentUser } from '../../auth/Auth';
+import toast from 'react-hot-toast';
 
 interface LoginComponentProps {}
 
 const LoginComponent: React.FC<LoginComponentProps> = () => {
-  const { setLoading, setUser } = useContext(AuthContext);
+  const { setUser } = useContext(AuthContext);
+  const [loading, setLoading] = useState(true);
   const [userLocal, setUserLocal] = useState<any>('');
   const [errors, setErrors] = useState<any>({});
   const [showPassword, setShowPassowrd] = useState<boolean>(false);
@@ -33,21 +36,45 @@ const LoginComponent: React.FC<LoginComponentProps> = () => {
         password: values.password,
       })
       .then((res) => {
-        setLoading(false);
         localStorage.setItem('FBIdToken', `Bearer ${res.data.token}`);
         setUser(getCurrentUser() || null);
         router.push('/');
       })
       .catch((error) => {
-        setLoading(false);
         console.log(error.response.data.message || '');
+        toast.error(error.response.data.message || '');
         // if (error.response.data.path[0] === 'general')
         //   toast.error(error.response.data.message);
 
         // setErrors(error.response.data);
       });
   };
-  const signInWithGoogle = () => {};
+  const signInWithGoogle = () => {
+    signInWithPopup(auth, provider)
+      .then(async (res: any) => {
+        const { accessToken } = res.user;
+        const { displayName, email, photoURL, uid } = res.user;
+        const newUser = {
+          name: displayName,
+          email,
+          password: '',
+          userId: uid,
+          imgUrl: photoURL,
+          number: '0999',
+        };
+        await axios
+          .post(`${links.default}/user/google`, newUser)
+          .then((res) => {
+            console.log(res.data);
+            localStorage.setItem('FBIdToken', `Bearer ${accessToken}`);
+            setLoading(false);
+            router.replace('/');
+          })
+          .catch((error) => console.log(error?.response?.data?.message || ''));
+      })
+      .catch((error) => console.log(error?.response?.data?.message || ''));
+  };
+  const signInWithFacebook = () => {};
 
   const handleShowPassword = () => setShowPassowrd(showPassword ? false : true);
   return (
@@ -62,9 +89,9 @@ const LoginComponent: React.FC<LoginComponentProps> = () => {
             </Head>
 
             <main>
-              <div className=" flex justify-center items-center">
+              <div className=" flex justify-center items-center relative">
                 {/* container */}
-                <div className="h-[550px] xs:h-[666px] w-[375px] font-roboto relative px-5">
+                <div className="h-screen w-[375px] font-roboto px-5">
                   <div className="pt-5 xs:pt-12 md:pt-13 w-[90%] m-0">
                     <img
                       className="object-cover object-center w-[15rem] h-w-[15rem] fixed transform -z-50 translate-x-[14rem] -translate-y-16 top-0"
@@ -79,10 +106,15 @@ const LoginComponent: React.FC<LoginComponentProps> = () => {
                     <h1 className=" text-2xl sm:text-3xl font-bold text-[#3d1c47]">
                       Login to your <br /> account
                     </h1>
+                    {/* <img
+                      className="object-cover object-center h-20 w-25 fixed left-10 top-0"
+                      src="/logo_svg/nicas_logo.png"
+                      alt=""
+                    /> */}
                     <img
                       className="mt-8 h-[8rem] mx-auto object-cover object-center"
-                      src="/logo_svg/logo_text_vertical.png"
-                      alt="chef"
+                      src="/logo_svg/logo_min_grean_alt.png"
+                      alt="logo"
                     />
                   </div>
                   {/* form */}
@@ -108,7 +140,7 @@ const LoginComponent: React.FC<LoginComponentProps> = () => {
                       </div>
                       <button
                         type="submit"
-                        className="text-center w-full bg-[#3d1c47] text-gray-300 py-3 rounded-full"
+                        className="text-center w-full bg-[#00ddc6] text-[#00554c] py-3 rounded-full font-bold"
                       >
                         Log in
                       </button>
@@ -127,7 +159,7 @@ const LoginComponent: React.FC<LoginComponentProps> = () => {
                       </button>
                       <button
                         type="button"
-                        onClick={signInWithGoogle}
+                        onClick={signInWithFacebook}
                         className="flex text-center justify-center items-center w-full py-2 text-white bg-[#039ae5] rounded-md mt-3"
                       >
                         <img

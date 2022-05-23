@@ -10,9 +10,14 @@ import PaymentModal from './PaymentModal';
 interface CartComponentProps {
   cartItems?: any;
   user: any;
+  userName: string;
 }
 
-const CartComponent: React.FC<CartComponentProps> = ({ cartItems, user }) => {
+const CartComponent: React.FC<CartComponentProps> = ({
+  cartItems,
+  user,
+  userName,
+}) => {
   const [cartItemsData, setCartItemsData] = useState<any>([]);
   const [cartTotal, setCartTotal] = useState<number>(0);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -25,10 +30,8 @@ const CartComponent: React.FC<CartComponentProps> = ({ cartItems, user }) => {
   });
 
   const handleAddQty = (item: any) => {
-    console.log(orderType);
     const currentItem = [...cartItemsData];
     const index = currentItem.indexOf(item);
-    console.log(radioValue);
     // if (currentItem[index].qty >= 20) return;
 
     currentItem[index].qty = currentItem[index].qty + 1;
@@ -37,7 +40,7 @@ const CartComponent: React.FC<CartComponentProps> = ({ cartItems, user }) => {
   const handleSubQty = async (item: any) => {
     const currentItem = [...cartItemsData];
     const index = currentItem.indexOf(item);
-    // if (currentItem[index].qty <= 1) return;
+    if (currentItem[index].qty <= 1) return;
 
     currentItem[index].qty = currentItem[index].qty - 1;
     setCartItemsData(currentItem);
@@ -114,6 +117,7 @@ const CartComponent: React.FC<CartComponentProps> = ({ cartItems, user }) => {
               cartItemsData={cartItemsData}
               user={user?.user}
               cartTotal={cartTotal}
+              userName={userName}
             />
           </div>
         </div>

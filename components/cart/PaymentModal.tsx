@@ -1,6 +1,7 @@
 import { useState, useContext } from 'react';
 import { Dialog } from '@headlessui/react';
 import { useRouter } from 'next/router';
+import toast from 'react-hot-toast';
 import RadioSelectPayment from './RadioSelectPayment';
 import RadioOrderType from './RadioOrderType';
 import axios from 'axios';
@@ -18,6 +19,7 @@ interface PaymentModalProps {
   cartItemsData: any;
   user: any;
   cartTotal: number;
+  userName: string;
 }
 
 const PaymentModal: React.FC<PaymentModalProps> = ({
@@ -30,13 +32,14 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   cartItemsData,
   user,
   cartTotal,
+  userName,
 }) => {
   const { userPayment, setUserPayment } = useContext(AuthContext);
   const [status, setStatus] = useState<any>('');
   const router = useRouter();
   const handlePayNow = async () => {
     const cartItems = [...cartItemsData];
-    const foodOrders = cartItems.map((item: any) => {
+    const foodOrders: any = cartItems.map((item: any) => {
       const obj = {
         name: item.name,
         qty: item.qty,
@@ -49,31 +52,49 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     if (radioValue === 'Cash') {
       // call backend
       await axios
-        .post(`${links.default}/order/${user?.user_id}`, { foodOrders })
-        .then((data) => {
+        .post(`${links.default}/order/${user?.user_id}`, {
+          foodOrders,
+          orderDate: new Date().toLocaleString(),
+        })
+        .then(async (data) => {
           setStatus(data.status);
           console.log(data.status);
+          // call Back-end to pay order
+          await axios
+            .put(`${links.default}/order/pay/${user?.user_id}`)
+            .then((data) => {
+              console.log(data.status);
+              // redirect user if success
+              router.push('/payment/success');
+              setUserPayment({
+                details: { name: userName },
+                amount: cartTotal,
+              });
+            })
+            .catch((err) => {
+              setStatus(err.response.status);
+              console.log(
+                err.response.data.error || err.response.data.message || err
+              );
+              toast.error(
+                err.response.data.error || err.response.data.message || ''
+              );
+            });
         })
-        .catch((err) =>
+        .catch((err) => {
+          setStatus(err.response.status);
           console.log(
             err.response.data.error || err.response.data.message || err
-          )
-        );
-      await axios
-        .put(`${links.default}/order/pay/${user?.user_id}`)
-        .then((data) => {
-          setStatus(data.status);
-          console.log(data.status);
-        })
-        .catch((err) =>
-          console.log(
-            err.response.data.error || err.response.data.message || err
-          )
-        );
-    }
-    if (status === 200) {
-      router.push('/payment/success');
-      setUserPayment({ details: user?.name, amount: cartTotal });
+          );
+          toast.error(
+            err.response.data.error || err.response.data.message || ''
+          );
+        });
+      if (status > 200 || status !== '') {
+        // redirect User if failed
+        router.push('/payment/failed');
+        setUserPayment({ details: { name: userName }, amount: cartTotal });
+      }
     }
   };
   return (

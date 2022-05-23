@@ -10,14 +10,20 @@ interface CartCompRedProps {}
 const CartCompRed: React.FC<CartCompRedProps> = () => {
   const [cartItems, setCartItems] = useState<any>([]);
   const [user, setUser] = useState<any>({});
+  const [userName, setUserName] = useState<string>('');
   const router = useRouter();
 
   useEffect(() => {
     const getUser: any = getCurrentUser();
-    setUser(getUser);
+
     if (!getUser) router.push('/login');
+    setUser(getUser);
     if (getUser) {
       const getCartItems = async () => {
+        await axios
+          .get(`${links.default}/user/${getUser?.user?.user_id}`)
+          .then((data) => setUserName(data?.data?.name))
+          .catch((err) => console.log(err.response.data.error || err));
         await axios
           .get(`${links.default}/user/cart/${getUser?.user?.user_id}`)
           .then((data) => setCartItems(data.data))
@@ -28,7 +34,7 @@ const CartCompRed: React.FC<CartCompRedProps> = () => {
   }, []);
   return (
     <>
-      <CartComponent user={user} cartItems={cartItems} />
+      <CartComponent user={user} userName={userName} cartItems={cartItems} />
     </>
   );
 };

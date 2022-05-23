@@ -22,17 +22,16 @@ const OrdersComponent: React.FC<OrdersComponentProps> = ({
 
   if (orderHistory) {
     orderHistory?.filter((order: any) => {
-      order?.orderedFoods?.forEach((food: any) => {
-        if (
-          order.orderStatus.status === 'pending payment' ||
-          order.orderStatus.status === 'serving'
-        )
-          pendingOrders.push({ food, orderStatus: order.orderStatus });
-        else if (order.orderStatus.status === 'completed')
-          completedOrders.push({ food, orderStatus: order.orderStatus });
-      });
+      if (
+        order.orderStatus.status === 'pending payment' ||
+        order.orderStatus.status === 'serving'
+      )
+        pendingOrders.push(order);
+      else if (order.orderStatus.status === 'completed')
+        completedOrders.push(order);
     });
   }
+  console.log(pendingOrders);
   return (
     <>
       <MainLayout title="Orders">
@@ -61,22 +60,15 @@ const OrdersComponent: React.FC<OrdersComponentProps> = ({
               </Tab.List>
               <Tab.Panels>
                 <Tab.Panel className="py-5">
-                  <div className="overflow-auto h-[30rem] max-h-screen flex flex-col gap-5">
+                  {/* <div className="overflow-auto h-[30rem] max-h-screen flex flex-col">
                     {pendingOrders.map((p: any) => (
-                      <OrderItems
-                        key={p.food.id}
-                        name={p.food.name}
-                        img={p.food.img}
-                        servingTime={p.food.servingTime}
-                        paidStatus={p.orderStatus.status}
-                        paid={p.orderStatus.paid}
-                      />
+                      <OrderItems />
                     ))}
-                  </div>
+                  </div> */}
                 </Tab.Panel>
                 <Tab.Panel className="py-5">
                   <div className="overflow-auto h-[30rem] max-h-screen flex flex-col gap-5">
-                    {completedOrders.map((p: any) => (
+                    {/* {completedOrders.map((p: any) => (
                       <OrderItems
                         key={p.food.id}
                         name={p.food.name}
@@ -85,7 +77,7 @@ const OrdersComponent: React.FC<OrdersComponentProps> = ({
                         paidStatus={p.orderStatus.status}
                         paid={p.orderStatus.paid}
                       />
-                    ))}
+                    ))} */}
                   </div>
                 </Tab.Panel>
               </Tab.Panels>
@@ -98,3 +90,10 @@ const OrdersComponent: React.FC<OrdersComponentProps> = ({
 };
 
 export default OrdersComponent;
+
+// key={p.food.id}
+// name={p.food.name}
+// img={p.food.img}
+// servingTime={p.food.servingTime}
+// paidStatus={p.orderStatus.status}
+// paid={p.orderStatus.paid}

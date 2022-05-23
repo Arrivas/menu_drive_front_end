@@ -1,7 +1,8 @@
-import links from '../../config/links';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { PayPalButtons } from '@paypal/react-paypal-js';
 import { useRouter } from 'next/router';
+import links from '../../config/links';
+import toast from 'react-hot-toast';
 import AuthContext from '../../context/AuthContext';
 import axios from 'axios';
 interface PaypalProps {
@@ -18,6 +19,7 @@ const Paypal: React.FC<PaypalProps> = ({
   userId,
 }) => {
   const router = useRouter();
+  const [status, setStatus] = useState<any>(500);
   const { userPayment, setUserPayment } = useContext(AuthContext);
   return (
     <div className="relative">
@@ -35,6 +37,7 @@ const Paypal: React.FC<PaypalProps> = ({
         }}
         onApprove={async (data: any, actions: any) => {
           return await actions.order.capture().then(async (details: any) => {
+            // call backend
             const cartItems = [...cartItemsData];
             const foodOrders = cartItems.map((item: any) => {
               const obj = {
@@ -46,26 +49,47 @@ const Paypal: React.FC<PaypalProps> = ({
               };
               return obj;
             });
-            // call backend
             await axios
-              .post(`${links.default}/order/${userId}`, { foodOrders })
-              .then((data) => console.log(data.data))
-              .catch((err) =>
+              .post(`${links.default}/order/${userId}`, {
+                foodOrders,
+                orderDate: new Date().toLocaleString(),
+              })
+              .then(async (data) => {
+                setStatus(data.status);
+                console.log(data.status);
+                // call back-end
+                await axios
+                  .put(`${links.default}/order/pay/${userId}`)
+                  .then((data) => {
+                    console.log(data.status);
+                  })
+                  .catch((err) => {
+                    console.log(
+                      err.response.data.error ||
+                        err.response.data.message ||
+                        err
+                    );
+                    toast.error(
+                      err.response.data.error || err.response.data.message || ''
+                    );
+                  });
+                // redirect User if success
+                router.push('/payment/success');
+                setUserPayment({ details: details.payer, amount });
+              })
+              .catch((err) => {
                 console.log(
                   err.response.data.error || err.response.data.message || err
-                )
-              );
-            await axios
-              .put(`${links.default}/order/pay/${userId}`)
-              .then((data) => console.log(data.data))
-              .catch((err) =>
-                console.log(
-                  err.response.data.error || err.response.data.message || err
-                )
-              );
-            // redirect User
-            router.push('/payment/success');
-            setUserPayment({ details: details.payer, amount });
+                );
+                toast.error(
+                  err.response.data.error || err.response.data.message || ''
+                );
+              });
+            if (status > 200 || status !== '') {
+              // redirect User if failed
+              router.push('/payment/failed');
+              setUserPayment({ details: details.payer, amount });
+            }
           });
         }}
         onError={(err) => console.log(err)}
