@@ -1,10 +1,10 @@
-import AccountComp from '../components/account/AccountComp';
+import AccountRed from '../redirects/AccountRed';
 interface ProfileProps {}
 
 const Profile: React.FC<ProfileProps> = () => {
   return (
     <>
-      <AccountComp />
+      <AccountRed />
     </>
   );
 };
