@@ -85,12 +85,12 @@ const Paypal: React.FC<PaypalProps> = ({
                 toast.error(
                   err.response.data.error || err.response.data.message || ''
                 );
+                if (status > 200) {
+                  // redirect User if failed
+                  router.push('/payment/failed');
+                  setUserPayment({ details: details.payer, amount });
+                }
               });
-            if (status > 200) {
-              // redirect User if failed
-              router.push('/payment/failed');
-              setUserPayment({ details: details.payer, amount });
-            }
           });
         }}
         onError={(err) => console.log(err)}
