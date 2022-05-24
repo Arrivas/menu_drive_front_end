@@ -1,5 +1,5 @@
 export default {
-  default: 'https://asia-east2-menudrive-92753.cloudfunctions.net/app',
+  default: 'http://localhost:5001/menudrive-92753/asia-east2/app',
 };
 
 // https://asia-east2-menudrive-92753.cloudfunctions.net/app firebase

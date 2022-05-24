@@ -86,7 +86,7 @@ const Paypal: React.FC<PaypalProps> = ({
                   err.response.data.error || err.response.data.message || ''
                 );
               });
-            if (status > 200 || status !== '') {
+            if (status > 200) {
               // redirect User if failed
               router.push('/payment/failed');
               setUserPayment({ details: details.payer, amount });

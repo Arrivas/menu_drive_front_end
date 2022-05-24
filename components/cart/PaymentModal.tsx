@@ -90,7 +90,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             err.response.data.error || err.response.data.message || ''
           );
         });
-      if (status > 200 || status !== '') {
+      if (status > 200) {
         // redirect User if failed
         router.push('/payment/failed');
         setUserPayment({ details: { name: userName }, amount: cartTotal });
