@@ -60,7 +60,7 @@ const CartComponent: React.FC<CartComponentProps> = ({
   };
   return (
     <>
-      {cartTotal ? (
+      {cartTotal > 0 ? (
         <div className="flex justify-center items-center font-roboto">
           <div className="pt-8 h-[667px] w-[375px] sm:h-screen font-roboto relative">
             {/* top items */}
@@ -124,6 +124,52 @@ const CartComponent: React.FC<CartComponentProps> = ({
             </div>
           </div>
         </div>
+      ) : cartTotal === 0 ? (
+        <>
+          <div className="flex justify-center items-center font-roboto">
+            <div className="pt-8 h-[667px] w-[375px] sm:h-screen font-roboto relative">
+              {/* top items */}
+              <div className="flex justify-between w-full sm:px-5">
+                <Link href="/">
+                  <ChevronLeftIcon
+                    className="cursor-pointer text-gray-500"
+                    height={30}
+                    width={30}
+                  />
+                </Link>
+                <h1 className="font-extrabold text-2xl text-gray-500 ">
+                  Cart Items
+                </h1>
+              </div>
+              {/* mid contents */}
+              <div className="flex flex-col items-center justify-center gap-5 pt-5 mt-2 pb-3 px-3 overflow-y-auto h-[99%] sm:h-[70%]">
+                <h1 className="font-light text-2xl text-gray-400">
+                  No Items in cart
+                </h1>
+              </div>
+              {/* checkout */}
+              <div className="fixed sm:absolute px-3 bottom-5 mx-auto left-[50%] transform translate-x-[-50%] w-[90%]">
+                {/* total */}
+                <div className="flex justify-between px-5 pb-2 text-2xl font-bold">
+                  <span className="">Total</span>
+                  <span>
+                    <span className="font-normal text-[20px]">₱</span>
+                    {cartTotal}
+                  </span>
+                </div>
+                <button
+                  onClick={handleCheckOut}
+                  disabled={cartItemsData.length === 0 ? true : false}
+                  className={`${
+                    cartItemsData.length === 0 ? 'opacity-50' : 'opacity-100'
+                  } w-full text-xl py-3 rounded-2xl bg-black text-gray-300 font-extrabold`}
+                >
+                  Checkout
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
       ) : (
         <Loading loading={true} />
       )}
